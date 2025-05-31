@@ -252,7 +252,7 @@ export const audioClasses = [
     "reversing_beeps", "ice_cream_truck", "aircraft_engine", "jet_engine", "propeller",
     "fixed-wing_aircraft", "engine", "light_engine", "dental_drill's_drill", "lawn_mower",
     "chainsaw", "medium_engine", "heavy_engine", "engine_knocking", "engine_starting", "idling",
-    "accelerating", "door", "doorbell", "ding-dong", "sliding_door", "slam", "knock", "tap",
+    "accelerating", "door", "ding-dong", "sliding_door", "slam", "knock", "tap",
     "squeak", "cupboard_open_or_close", "drawer_open_or_close", "dishes", "cutlery", "chopping",
     "frying", "microwave_oven", "blender", "water_tap", "sink", "bathtub", "hair_dryer",
     "toilet_flush", "toothbrush", "electric_toothbrush", "vacuum_cleaner", "zipper",

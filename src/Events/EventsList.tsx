@@ -1,20 +1,11 @@
-import { Card } from "@/components/ui/card";
 import { useFilterEvents } from "@/hooks/use-filter-events";
 import { useApi } from "@/utils/api";
-import { DetectionClassIcon } from "@/utils/DetectionClassIcon";
 import { useEventStore } from "@/utils/store";
 import { DetectionEvent, Page } from "@/utils/types";
-import {
-  formatTimestamp,
-  getClassBadgeColor,
-  getEventRelevantClass,
-  getLabelText,
-} from "@/utils/utils";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { endOfDay, startOfDay } from "date-fns";
 import { useEffect, useRef, useState } from "react";
-import { EventDialogImage } from "./EventDialogImage";
-import { SourceIcon } from "@/utils/SourceIcon";
+import EventsGroupElement from "./EventsGroupElement";
 
 type Props = {
   columnWidth?: number;
@@ -27,8 +18,6 @@ export default function EventsList({
 }: Props) {
   const parentRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(0);
-  const timezone = useEventStore((state) => state.timezone);
-  const setFilter = useEventStore((state) => state.setFilter);
   const numericDate = useEventStore((state) => state.date);
   const refreshTime = useEventStore((state) => state.refreshTime);
   const setPage = useEventStore((state) => state.setPage);
@@ -92,10 +81,8 @@ export default function EventsList({
 
           for (let i = 0; i < columnCount; i++) {
             const index = startIndex + i;
-            const event = events[index];
-            if (!event) break;
-
-            const relevantClass = getEventRelevantClass(event);
+            const eventsGroup = events[index];
+            const event = eventsGroup?.events[0];
 
             items.push(
               <div
@@ -106,41 +93,7 @@ export default function EventsList({
                   padding: "0.5rem",
                 }}
               >
-                <Card
-                  className="rounded-none cursor-pointer overflow-auto relative group w-full p-0"
-                  style={{ aspectRatio: "1 / 1", width: "100%" }}
-                >
-                  <div className="w-full h-full flex items-center justify-center">
-                    <div className="absolute top-0 left-0 w-6 h-6 bg-black/50 text-white flex items-center justify-center rounded">
-                      <DetectionClassIcon
-                        small
-                        detectionClass={getEventRelevantClass(event)}
-                      />
-                    </div>
-                    <div className="absolute top-0 right-0 w-6 h-6 bg-black/50 hover:bg-black/80 text-white flex items-center justify-center rounded cursor-pointer transition-colors duration-200">
-                      <div className="text-[10px] text-gray-300 hover:text-white font-semibold">
-                        <SourceIcon eventSource={event.source} />
-                      </div>
-                    </div>
-                    <EventDialogImage event={event} />
-                    {event.label && (
-                      <div className="absolute bottom-1 left-1">
-                        <div
-                          className={`inline-flex items-center px-1 py-0.5 rounded-full text-[0.6rem] font-small ${getClassBadgeColor(
-                            relevantClass
-                          )}`}
-                          onClick={() => event.label && setFilter(event.label)}
-                        >
-                          {getLabelText(event.label)}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </Card>
-                <div className="text-xs font-semibold text-gray-700">
-                  {formatTimestamp(event.timestamp, timezone)}
-                </div>
-                <div className="text-xs text-gray-500">{event.deviceName}</div>
+                <EventsGroupElement eventsGroup={eventsGroup} />
               </div>
             );
           }

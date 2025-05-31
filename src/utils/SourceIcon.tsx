@@ -16,5 +16,7 @@ export const SourceIcon = (props: {
       return <FrigateIcon />;
     case ScryptedEventSource.NVR:
       return <ScryptedIcon />;
+    case ScryptedEventSource.RawDetection:
+      return <span>AN</span>;
   }
 };

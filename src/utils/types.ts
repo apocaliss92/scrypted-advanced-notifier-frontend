@@ -93,6 +93,9 @@ export type EventStore = {
     configs?: AppConfigs
     setConfigs: (configs: AppConfigs) => void
 
+    groupingRange: number
+    setGroupingRange: (groupingRange: number) => void
+
     refreshTime: number
     setRefreshTime: (refreshTime: number) => void
 }

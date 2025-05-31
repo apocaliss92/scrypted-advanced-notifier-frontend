@@ -39,6 +39,8 @@ export const useEventStore = create<EventStore>()(
             setCameras: (cameras: string[]) => set({ cameras }),
             refreshTime: new Date().getTime(),
             setRefreshTime: (refreshTime: number) => set({ refreshTime }),
+            groupingRange: 5,
+            setGroupingRange: (groupingRange?: number) => set({ groupingRange }),
         }),
         {
             name: 'events-storage',

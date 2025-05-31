@@ -1,11 +1,16 @@
 import { SidebarGroup, SidebarGroupContent } from "@/components/ui/sidebar";
-import { DateSelector } from "@/Events/components/DateSelector";
-import { ClassSelector } from "@/Events/components/ClassSelector";
-import { SourceSelector } from "@/Events/components/SourceSelector";
-import { CameraSelector } from "@/Events/components/CameraSelector";
-import { LabelInput } from "@/Events/components/LabelInput";
+import { DateSelector } from "@/MainLayout/components/DateSelector";
+import { ClassSelector } from "@/MainLayout/components/ClassSelector";
+import { SourceSelector } from "@/MainLayout/components/SourceSelector";
+import { CameraSelector } from "@/MainLayout/components/CameraSelector";
+import { LabelInput } from "@/MainLayout/components/LabelInput";
+import { GroupTimeRange } from "./components/GroupTimeRange";
+import { useEventStore } from "@/utils/store";
+import { ScryptedEventSource } from "@/utils/types";
 
 export function NavFilters({ ...props }: React.ComponentProps<"form">) {
+  const eventSource = useEventStore((state) => state.eventSource);
+
   return (
     <form {...props}>
       <SidebarGroup className="py-0 flex flex-col space-y-4">
@@ -24,6 +29,12 @@ export function NavFilters({ ...props }: React.ComponentProps<"form">) {
         <SidebarGroupContent className="relative">
           <CameraSelector />
         </SidebarGroupContent>
+
+        {eventSource === ScryptedEventSource.Auto && (
+          <SidebarGroupContent className="relative">
+            <GroupTimeRange />
+          </SidebarGroupContent>
+        )}
 
         <SidebarGroupContent className="relative">
           <LabelInput />
