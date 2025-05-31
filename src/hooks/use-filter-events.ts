@@ -48,7 +48,7 @@ export const useFilterEvents = (events: DetectionEvent[]) => {
                     isClassOk &&
                     (cameras.length ? cameras.includes(event.deviceName) : true) &&
                     // TODO: Use a fuzzy filter
-                    (filter ? event.label && event.label?.includes(filter) : true)
+                    (filter ? event.label && event.label.toLowerCase()?.includes(filter.toLowerCase()) : true)
                 );
             })
             .map(event => {
