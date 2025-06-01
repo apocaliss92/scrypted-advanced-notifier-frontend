@@ -124,7 +124,12 @@ export const useFilterEvents = (events: DetectionEvent[]) => {
 
             return groups;
         } else {
-            return sortedEvents.map(event => ({ events: [event] })) as DetectionGroup[];
+            return sortedEvents.map(event => ({
+                events: [event],
+                representative: event,
+                classes: event.classes,
+                labels: [event.label]
+            })) as DetectionGroup[];
         }
     }, [events, cameras, eventSource, filter, groupingRange, detectionClasses])
 }

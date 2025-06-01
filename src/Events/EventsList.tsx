@@ -82,7 +82,11 @@ export default function EventsList({
           for (let i = 0; i < columnCount; i++) {
             const index = startIndex + i;
             const eventsGroup = events[index];
-            const event = eventsGroup?.events[0];
+            const event = eventsGroup?.representative;
+
+            if (!event) {
+              continue;
+            }
 
             items.push(
               <div
