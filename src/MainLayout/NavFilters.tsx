@@ -6,10 +6,11 @@ import { CameraSelector } from "@/MainLayout/components/CameraSelector";
 import { LabelInput } from "@/MainLayout/components/LabelInput";
 import { GroupTimeRange } from "./components/GroupTimeRange";
 import { useEventStore } from "@/utils/store";
-import { ScryptedEventSource } from "@/utils/types";
+import { Page, ScryptedEventSource } from "@/utils/types";
 
 export function NavFilters({ ...props }: React.ComponentProps<"form">) {
   const eventSource = useEventStore((state) => state.eventSource);
+  const page = useEventStore((state) => state.page);
 
   return (
     <form {...props}>
@@ -22,23 +23,27 @@ export function NavFilters({ ...props }: React.ComponentProps<"form">) {
           <ClassSelector />
         </SidebarGroupContent>
 
-        <SidebarGroupContent className="relative">
-          <SourceSelector />
-        </SidebarGroupContent>
+        {page === Page.Events && (
+          <SidebarGroupContent className="relative">
+            <SourceSelector />
+          </SidebarGroupContent>
+        )}
 
         <SidebarGroupContent className="relative">
           <CameraSelector />
         </SidebarGroupContent>
 
-        {eventSource === ScryptedEventSource.Auto && (
+        {page === Page.Events && eventSource === ScryptedEventSource.Auto && (
           <SidebarGroupContent className="relative">
             <GroupTimeRange />
           </SidebarGroupContent>
         )}
 
-        <SidebarGroupContent className="relative">
-          <LabelInput />
-        </SidebarGroupContent>
+        {page === Page.Events && (
+          <SidebarGroupContent className="relative">
+            <LabelInput />
+          </SidebarGroupContent>
+        )}
       </SidebarGroup>
     </form>
   );

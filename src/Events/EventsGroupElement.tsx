@@ -6,7 +6,7 @@ import { useEventStore } from "@/utils/store";
 import {
   formatTimestamp,
   getClassBadgeColor,
-  getEventRelevantClass,
+  getRelevantClass,
   getLabelText,
 } from "@/utils/utils";
 import { EventDialogImage } from "./EventDialogImage";
@@ -20,7 +20,7 @@ export default function EventsGroupElement({ eventsGroup }: Props) {
   const setFilter = useEventStore((state) => state.setFilter);
 
   const event = eventsGroup.representative;
-  const relevantClass = getEventRelevantClass(event);
+  const relevantClass = getRelevantClass(event.classes);
 
   return (
     <>
@@ -32,7 +32,7 @@ export default function EventsGroupElement({ eventsGroup }: Props) {
           <div className="absolute top-0 left-0 w-6 h-6 bg-black/50 text-white flex items-center justify-center rounded">
             <DetectionClassIcon
               small
-              detectionClass={getEventRelevantClass(event)}
+              detectionClass={getRelevantClass(event.classes)}
             />
           </div>
           <div className="absolute top-0 right-0 w-6 h-6 bg-black/50 hover:bg-black/80 text-white flex items-center justify-center rounded cursor-pointer transition-colors duration-200">

@@ -1,11 +1,13 @@
-import axios from "axios"
-import { AppConfigs, DetectionEvent, Page } from "./types";
+import axios from "axios";
 import { useEventStore } from "./store";
+import { AppConfigs, DetectionEvent, Page, VideoClip } from "./types";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 enum ApiMethod {
     GetEvents = 'GetEvents',
+    GetVideoclips = 'GetVideoclips',
+    GetVideoclipHref = 'GetVideoclipHref',
     GetConfigs = 'GetConfigs',
 }
 
@@ -47,6 +49,17 @@ export const useApi = () => {
         });
     };
 
+    const getVideoclips = async (fromDate: number, tillDate: number) => {
+        return baseCall<VideoClip[]>({
+            apimethod: ApiMethod.GetVideoclips,
+            method: "POST",
+            payload: {
+                fromDate,
+                tillDate,
+            }
+        });
+    };
+
     const getConfigs = async () => {
         return baseCall<AppConfigs>({
             apimethod: ApiMethod.GetConfigs,
@@ -54,10 +67,42 @@ export const useApi = () => {
         });
     };
 
+    const getVideoclipHref = async (videoclip: VideoClip) => {
+        return baseCall<{ videoHref: string }>({
+            apimethod: ApiMethod.GetVideoclipHref,
+            method: "POST",
+            payload: {
+                deviceId: videoclip.deviceId,
+                videoId: videoclip.videoId,
+            }
+        });
+    };
+
     const getEventImageUrls = (event: DetectionEvent) => {
         return {
             thumbnail: `${import.meta.env.VITE_API_IMAGES_URL}${event.thumbnailUrl}`,
             fullRes: `${import.meta.env.VITE_API_IMAGES_URL}${event.imageUrl}`,
+        };
+    };
+
+    const getVideoclipImageUrls = (clip: VideoClip) => {
+        const srcThumbnailUrl = clip.resources?.thumbnail?.href;
+        const isLocal = import.meta.env.DEV;
+        const thumbnailUrl = isLocal && !srcThumbnailUrl?.startsWith('http') ?
+            `/api${srcThumbnailUrl}` : srcThumbnailUrl;
+
+        return {
+            thumbnailUrl,
+        };
+    };
+
+    const getVideoclipVideoUrls = (srcVideoHref: string) => {
+        const isLocal = import.meta.env.DEV;
+        const videoUrl = isLocal && !srcVideoHref?.startsWith('http') ?
+            `/api${srcVideoHref}` : srcVideoHref;
+
+        return {
+            videoUrl,
         };
     };
 
@@ -82,7 +127,8 @@ export const useApi = () => {
             setUserInfo({
                 ...response.data,
                 basicAuthToken,
-            })
+            });
+            setPage(Page.Events);
         }
     };
 
@@ -97,6 +143,10 @@ export const useApi = () => {
         logout,
         getConfigs,
         getEventImageUrls,
-        getEvents
+        getEvents,
+        getVideoclips,
+        getVideoclipImageUrls,
+        getVideoclipHref,
+        getVideoclipVideoUrls,
     };
 }

@@ -17,7 +17,8 @@ import {
 } from "@/components/ui/sidebar";
 import { useEventStore } from "@/utils/store";
 import { Page } from "@/utils/types";
-import { GalleryThumbnails } from "lucide-react";
+import { GalleryThumbnails, Video } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface Tool {
   name: string;
@@ -30,6 +31,11 @@ const tools: Tool[] = [
     name: "Events",
     logo: GalleryThumbnails,
     page: Page.Events,
+  },
+  {
+    name: "Videoclips",
+    logo: Video,
+    page: Page.Videoclips,
   },
 ];
 
@@ -76,7 +82,12 @@ export function TeamSwitcher() {
                 onClick={() => setPage(tool.page)}
                 className="gap-2 p-2"
               >
-                <div className="flex size-6 items-center justify-center rounded-sm border">
+                <div
+                  className={cn(
+                    "flex size-6 items-center justify-center rounded-sm border",
+                    tool.name === activeTool.name ? "bg-sidebar-primary" : ""
+                  )}
+                >
                   <tool.logo className="size-4 shrink-0" />
                 </div>
                 {tool.name}

@@ -20,7 +20,7 @@ export enum ScryptedEventSource {
     Frigate = 'Frigate'
 }
 
-export type DetectionEvent = {
+export interface DetectionEvent {
     id: string;
     timestamp: number;
     classes: string[];
@@ -32,6 +32,28 @@ export type DetectionEvent = {
     deviceName: string;
     sensorName?: string;
     sourceId?: string;
+}
+interface Resource {
+    file?: string;
+    href?: string;
+}
+interface VideoResource {
+    thumbnail?: Resource;
+    video?: Resource;
+}
+export interface VideoClip {
+    id: string;
+    deviceName: string;
+    deviceId: string;
+    videoclipUrl: string;
+    startTime: number;
+    duration?: number;
+    event?: string;
+    description?: string;
+    detectionClasses?: string[];
+    thumbnailId?: string;
+    videoId?: string;
+    resources?: VideoResource;
 }
 export enum Timezone {
     IT = 'it',

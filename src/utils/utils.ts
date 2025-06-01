@@ -6,7 +6,7 @@ import {
 } from 'date-fns';
 import { enUS, it } from 'date-fns/locale';
 import { sortBy } from 'lodash';
-import { AnimalClass, DetectionEvent, Timezone } from './types';
+import { AnimalClass, Timezone } from './types';
 
 const localeMap: Record<Timezone, Locale> = {
     [Timezone.IT]: it,
@@ -55,9 +55,8 @@ export const getClassBadgeColor = (detectionClass: DetectionClass | AnimalClass)
     return classBadgeColorMap[detectionClassesDefaultMap[detectionClass]] ?? 'bg-black-100 text-black-800';
 }
 
-
-export const getEventRelevantClass = (event: DetectionEvent) => {
-    const sortedByPriorityAndScore = sortBy(event.classes.filter(detClass => detClass !== 'any_object'),
+export const getRelevantClass = (classes: string[]) => {
+    const sortedByPriorityAndScore = sortBy(classes.filter(detClass => detClass !== 'any_object'),
         (className) => [className ? classnamePrio[(detectionClassesDefaultMap[className] ?? className) as DetectionClass] : 100,
             1]
     );
