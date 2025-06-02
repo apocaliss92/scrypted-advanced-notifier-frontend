@@ -67,17 +67,6 @@ export const useApi = () => {
         });
     };
 
-    const getVideoclipHref = async (videoclip: VideoClip) => {
-        return baseCall<{ videoHref: string }>({
-            apimethod: ApiMethod.GetVideoclipHref,
-            method: "POST",
-            payload: {
-                deviceId: videoclip.deviceId,
-                videoId: videoclip.videoId,
-            }
-        });
-    };
-
     const getEventImageUrls = (event: DetectionEvent) => {
         return {
             thumbnail: `${import.meta.env.VITE_API_IMAGES_URL}${event.thumbnailUrl}`,
@@ -85,23 +74,18 @@ export const useApi = () => {
         };
     };
 
-    const getVideoclipImageUrls = (clip: VideoClip) => {
+    const getVideoclipUrls = (clip: VideoClip) => {
         const srcThumbnailUrl = clip.resources?.thumbnail?.href;
         const isLocal = import.meta.env.DEV;
         const thumbnailUrl = isLocal && !srcThumbnailUrl?.startsWith('http') ?
             `/api${srcThumbnailUrl}` : srcThumbnailUrl;
 
+        let videoUrl = `${import.meta.env.VITE_API_VIDEOCLIPS_URL}${clip.videoclipHref}`;
+        const supportsH265 = MediaSource.isTypeSupported('video/mp4; codecs="hvc1.1.6.L93.B0"');
+        videoUrl += `?h265=${supportsH265}`;
+
         return {
             thumbnailUrl,
-        };
-    };
-
-    const getVideoclipVideoUrls = (srcVideoHref: string) => {
-        const isLocal = import.meta.env.DEV;
-        const videoUrl = isLocal && !srcVideoHref?.startsWith('http') ?
-            `/api${srcVideoHref}` : srcVideoHref;
-
-        return {
             videoUrl,
         };
     };
@@ -145,8 +129,6 @@ export const useApi = () => {
         getEventImageUrls,
         getEvents,
         getVideoclips,
-        getVideoclipImageUrls,
-        getVideoclipHref,
-        getVideoclipVideoUrls,
+        getVideoclipUrls,
     };
 }

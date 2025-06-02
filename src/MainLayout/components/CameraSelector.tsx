@@ -32,6 +32,9 @@ export function CameraSelector() {
   };
 
   const label = cameras.length ? `${cameras.length} selected` : "All";
+  const allCameras = (configs?.cameras ?? [])
+    .map((camera) => camera.name)
+    .sort();
 
   return (
     <Popover>
@@ -60,7 +63,7 @@ export function CameraSelector() {
           >
             <CommandItem onSelect={() => setCameras([])}>Reset</CommandItem>
             <CommandSeparator />
-            {configs?.cameras.map(({ name }) => (
+            {allCameras.map((name) => (
               <CommandItem key={name} onSelect={() => toggleOption(name)}>
                 <input
                   type="checkbox"

@@ -1,5 +1,5 @@
 import { DetectionClass } from '@/detectionClasses';
-import { create, } from 'zustand';
+import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { AppConfigs, EventStore, Page, ScryptedEventSource, Timezone, UserInfo } from './types';
 

@@ -45,7 +45,7 @@ export interface VideoClip {
     id: string;
     deviceName: string;
     deviceId: string;
-    videoclipUrl: string;
+    videoclipHref: string;
     startTime: number;
     duration?: number;
     event?: string;
