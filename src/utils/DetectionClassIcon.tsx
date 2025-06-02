@@ -1,4 +1,8 @@
-import { DetectionClass, detectionClassesDefaultMap } from "@/detectionClasses";
+import {
+  AdditionalClass,
+  DetectionClass,
+  detectionClassesDefaultMap,
+} from "@/detectionClasses";
 import {
   AudioLines,
   Bell,
@@ -13,11 +17,14 @@ import {
   ScanFace,
   Wind,
   DoorOpen,
+  AlignCenter,
+  Timer,
+  Hourglass,
 } from "lucide-react";
 import { AnimalClass } from "./types";
 
 export const DetectionClassIcon = (props: {
-  detectionClass: DetectionClass | AnimalClass;
+  detectionClass: string;
   small?: boolean;
 }) => {
   const { detectionClass, small } = props;
@@ -44,7 +51,14 @@ export const DetectionClassIcon = (props: {
       case DetectionClass.Doorbell:
         return <Bell size={size} />;
       case DetectionClass.Sensor:
+      case AdditionalClass.Entry:
         return <DoorOpen size={size} />;
+      case DetectionClass.Others:
+        return <AlignCenter size={size} />;
+      case AdditionalClass.Detection:
+        return <Timer size={size} />;
+      case AdditionalClass.Timelapse:
+        return <Hourglass size={size} />;
       case AnimalClass.Dog:
         return <Dog size={size} />;
       case AnimalClass.Cat:
@@ -56,8 +70,9 @@ export const DetectionClassIcon = (props: {
     }
   };
 
-  return (
+  const found =
     findIcon(detectionClass) ??
-    findIcon(detectionClassesDefaultMap[detectionClass])
-  );
+    findIcon(detectionClassesDefaultMap[detectionClass]);
+
+  return found;
 };

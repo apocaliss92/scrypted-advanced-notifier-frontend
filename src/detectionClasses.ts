@@ -9,6 +9,7 @@ export enum DetectionClass {
     Package = 'package',
     Doorbell = 'doorbell',
     Sensor = 'sensor',
+    Others = 'others',
 }
 
 export const classnamePrio: Partial<Record<DetectionClass, number>> = {
@@ -20,6 +21,7 @@ export const classnamePrio: Partial<Record<DetectionClass, number>> = {
     [DetectionClass.Animal]: 4,
     [DetectionClass.Package]: 5,
     [DetectionClass.Motion]: 6,
+    [DetectionClass.Others]: 6,
 }
 
 export const basicDetectionClasses = [
@@ -27,6 +29,12 @@ export const basicDetectionClasses = [
     DetectionClass.Person,
     DetectionClass.Animal,
 ];
+
+export enum AdditionalClass {
+    Timelapse = 'timelapseClip',
+    Detection = 'detectionClip',
+    Entry = 'entry',
+}
 
 export const defaultDetectionClasses = Object.values(DetectionClass);
 

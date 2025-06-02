@@ -1,4 +1,4 @@
-import { classnamePrio, DetectionClass, detectionClassesDefaultMap } from '@/detectionClasses';
+import { AdditionalClass, classnamePrio, DetectionClass, detectionClassesDefaultMap } from '@/detectionClasses';
 import {
     format,
     isToday,
@@ -6,7 +6,7 @@ import {
 } from 'date-fns';
 import { enUS, it } from 'date-fns/locale';
 import { sortBy } from 'lodash';
-import { AnimalClass, Timezone } from './types';
+import { Timezone } from './types';
 
 const localeMap: Record<Timezone, Locale> = {
     [Timezone.IT]: it,
@@ -38,6 +38,10 @@ export const labelTranslationMap: Record<string, string> = {
     [DetectionClass.Audio]: 'Audio',
     [DetectionClass.Motion]: 'Motion',
     [DetectionClass.Sensor]: 'Sensor',
+    [DetectionClass.Others]: 'Others',
+    [AdditionalClass.Detection]: 'GIF',
+    [AdditionalClass.Timelapse]: 'Timelapse',
+    [AdditionalClass.Entry]: 'Sensor',
 }
 
 export const getLabelText = (label: string) => {
@@ -51,15 +55,15 @@ export const classBadgeColorMap: Partial<Record<DetectionClass, string>> = {
     [DetectionClass.Plate]: 'bg-green-100 text-green-800',
 }
 
-export const getClassBadgeColor = (detectionClass: DetectionClass | AnimalClass) => {
+export const getClassBadgeColor = (detectionClass: string) => {
     return classBadgeColorMap[detectionClassesDefaultMap[detectionClass]] ?? 'bg-black-100 text-black-800';
 }
 
 export const getRelevantClass = (classes: string[]) => {
     const sortedByPriorityAndScore = sortBy(classes.filter(detClass => detClass !== 'any_object'),
-        (className) => [className ? classnamePrio[(detectionClassesDefaultMap[className] ?? className) as DetectionClass] : 100,
+        (className) => [className ? classnamePrio[(detectionClassesDefaultMap[className] ?? className)] : 100,
             1]
     );
 
-    return sortedByPriorityAndScore[0] as DetectionClass | AnimalClass;
+    return sortedByPriorityAndScore[0]
 }
