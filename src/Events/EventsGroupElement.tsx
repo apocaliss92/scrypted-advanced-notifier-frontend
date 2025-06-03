@@ -10,17 +10,30 @@ import {
   getLabelText,
 } from "@/utils/utils";
 import { EventDialogImage } from "./EventDialogImage";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type Props = {
   eventsGroup: DetectionGroup;
+  loading: boolean;
 };
 
-export default function EventsGroupElement({ eventsGroup }: Props) {
+export default function EventsGroupElement({ eventsGroup, loading }: Props) {
   const timezone = useEventStore((state) => state.timezone);
   const setFilter = useEventStore((state) => state.setFilter);
 
   const event = eventsGroup.representative;
   const relevantClass = getRelevantClass(event.classes);
+
+  if (loading) {
+    return (
+      <Card
+        className="rounded-none cursor-pointer overflow-auto relative group w-full p-0"
+        style={{ aspectRatio: "1 / 1", width: "100%" }}
+      >
+        <Skeleton className="w-full h-full" />
+      </Card>
+    );
+  }
 
   return (
     <>

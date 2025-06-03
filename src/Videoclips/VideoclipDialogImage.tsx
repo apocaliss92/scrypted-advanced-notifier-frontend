@@ -5,7 +5,11 @@ import { getLabelText } from "@/utils/utils";
 import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
 import { useEffect, useRef, useState } from "react";
 
-export function VideoclipDialogImage({ videoclip }: { videoclip: VideoClip }) {
+interface Props {
+  videoclip: VideoClip;
+}
+
+export function VideoclipDialogImage({ videoclip }: Props) {
   const [open, setOpen] = useState(false);
   const { getVideoclipUrls } = useApi();
   const { thumbnailUrl, videoUrl } = getVideoclipUrls(videoclip);

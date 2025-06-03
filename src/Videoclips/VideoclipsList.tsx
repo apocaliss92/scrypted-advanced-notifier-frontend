@@ -22,12 +22,14 @@ export default function VideoclipsList({
   const refreshTime = useEventStore((state) => state.refreshTime);
   const setPage = useEventStore((state) => state.setPage);
   const [allVideoclips, setVideoclips] = useState<VideoClip[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const { getVideoclips } = useApi();
 
   useEffect(() => {
     const date = numericDate ? new Date(numericDate) : undefined;
     if (date) {
+      setLoading(true);
       getVideoclips(startOfDay(date).getTime(), endOfDay(date).getTime())
         .then((videoclips) => {
           setVideoclips(videoclips);
@@ -36,7 +38,8 @@ export default function VideoclipsList({
           if (e.response.status === 401) {
             setPage(Page.Login);
           }
-        });
+        })
+        .finally(() => setLoading(false));
     }
   }, [numericDate, refreshTime]);
 
@@ -52,7 +55,7 @@ export default function VideoclipsList({
   }, []);
 
   const columnCount = Math.max(1, Math.floor(containerWidth / columnWidth));
-  const rowCount = Math.ceil(videoclips.length / columnCount);
+  const rowCount = loading ? 20 : Math.ceil(videoclips.length / columnCount);
 
   const rowVirtualizer = useVirtualizer({
     count: rowCount,
@@ -96,7 +99,7 @@ export default function VideoclipsList({
                   padding: "0.5rem",
                 }}
               >
-                <VideoclipElement videoclip={videoclip} />
+                <VideoclipElement videoclip={videoclip} loading={loading} />
               </div>
             );
           }

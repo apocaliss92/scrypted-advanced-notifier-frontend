@@ -4,13 +4,26 @@ import { useEventStore } from "@/utils/store";
 import { VideoClip } from "@/utils/types";
 import { formatTimestamp, getRelevantClass } from "@/utils/utils";
 import { VideoclipDialogImage } from "./VideoclipDialogImage";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type Props = {
   videoclip: VideoClip;
+  loading: boolean;
 };
 
-export default function VideoclipElement({ videoclip }: Props) {
+export default function VideoclipElement({ videoclip, loading }: Props) {
   const timezone = useEventStore((state) => state.timezone);
+
+  if (loading) {
+    return (
+      <Card
+        className="rounded-none cursor-pointer overflow-auto relative group w-full p-0"
+        style={{ aspectRatio: "1 / 1", width: "100%" }}
+      >
+        <Skeleton className="w-full h-full" />
+      </Card>
+    );
+  }
 
   return (
     <>

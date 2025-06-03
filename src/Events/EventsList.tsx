@@ -22,12 +22,14 @@ export default function EventsList({
   const refreshTime = useEventStore((state) => state.refreshTime);
   const setPage = useEventStore((state) => state.setPage);
   const [allEvents, setEvents] = useState<DetectionEvent[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const { getEvents } = useApi();
 
   useEffect(() => {
     const date = numericDate ? new Date(numericDate) : undefined;
     if (date) {
+      setLoading(true);
       getEvents(startOfDay(date).getTime(), endOfDay(date).getTime())
         .then((events) => {
           setEvents(events);
@@ -36,7 +38,8 @@ export default function EventsList({
           if (e.response.status === 401) {
             setPage(Page.Login);
           }
-        });
+        })
+        .finally(() => setLoading(false));
     }
   }, [numericDate, refreshTime]);
 
@@ -97,7 +100,10 @@ export default function EventsList({
                   padding: "0.5rem",
                 }}
               >
-                <EventsGroupElement eventsGroup={eventsGroup} />
+                <EventsGroupElement
+                  eventsGroup={eventsGroup}
+                  loading={loading}
+                />
               </div>
             );
           }
