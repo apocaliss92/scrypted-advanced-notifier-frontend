@@ -7,22 +7,14 @@ import EventsList from "@/Events/EventsList";
 import { useApi } from "@/utils/api";
 import { useEventStore } from "@/utils/store";
 import { Page } from "@/utils/types";
+import VideoclipsList from "@/Videoclips/VideoclipsList";
+import { RefreshCcw } from "lucide-react";
 import { useEffectOnce } from "react-use";
 import { AppSidebar } from "./AppSidebar";
-import { RefreshCcw } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
-import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbPage,
-} from "@/components/ui/breadcrumb";
-import VideoclipsList from "@/Videoclips/VideoclipsList";
-
-const showBreadcrumb = false;
 
 export default function Layout() {
   const { getConfigs } = useApi();
+  const sidebarOpen = useEventStore((state) => state.sidebarOpen);
   const setConfigs = useEventStore((state) => state.setConfigs);
   const setPage = useEventStore((state) => state.setPage);
   const setRefreshTime = useEventStore((state) => state.setRefreshTime);
@@ -44,21 +36,20 @@ export default function Layout() {
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+        <header className="flex h-16 shrink-0 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
-            {page}
+            {!sidebarOpen && page}
             <RefreshCcw onClick={() => setRefreshTime(new Date().getTime())} />
-            <Separator orientation="vertical" className="mr-2 h-4" />
-            {showBreadcrumb && (
-              <Breadcrumb>
-                <BreadcrumbList>
-                  <BreadcrumbItem>
-                    <BreadcrumbPage>{page}</BreadcrumbPage>
-                  </BreadcrumbItem>
-                </BreadcrumbList>
-              </Breadcrumb>
-            )}
+          </div>
+
+          <div className="flex items-center gap-2 px-4">
+            <button
+              className="text-sm text-muted-foreground hover:text-foreground"
+              onClick={() => window.location.replace(window.location.origin)}
+            >
+              SCRYPTED
+            </button>
           </div>
         </header>
         {page === Page.Events ? (

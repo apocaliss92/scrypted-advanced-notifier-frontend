@@ -1,9 +1,16 @@
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Skeleton } from "@/components/ui/skeleton";
 import { DetectionGroup } from "@/hooks/use-filter-events";
+import { cn } from "@/lib/utils";
 import { useApi } from "@/utils/api";
 import { getLabelText } from "@/utils/utils";
 import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
-import { ArrowLeftCircle, ArrowRightCircle } from "lucide-react";
+import {
+  ArrowLeftCircle,
+  ArrowRightCircle,
+  Circle,
+  CircleDot,
+} from "lucide-react";
 import { useState } from "react";
 
 export function EventDialogImage({
@@ -15,6 +22,7 @@ export function EventDialogImage({
   const { getEventImageUrls } = useApi();
   const event = eventsGroup.representative;
   const { thumbnail } = getEventImageUrls(event);
+  const [loaded, setLoaded] = useState(false);
 
   const [currentIndex, setCurrentIndex] = useState(
     eventsGroup.events.findIndex((elem) => elem.id === event.id)
@@ -24,15 +32,23 @@ export function EventDialogImage({
   const showCarousel = eventsGroup.events.length > 1;
   const { fullRes } = getEventImageUrls(currentEvent);
 
+  const selectImage = (index: number) => {
+    setCurrentIndex(index);
+    setCurrentEvent(eventsGroup.events[index]);
+  };
+
   const nextImage = () => {
     const newIndex = (currentIndex + 1) % eventsGroup.events.length;
-    setCurrentIndex(newIndex);
-    setCurrentEvent(eventsGroup.events[newIndex]);
+    selectImage(newIndex);
+    setLoaded(false);
   };
   const previousImage = () => {
-    const newIndex = (currentIndex + 1) % eventsGroup.events.length;
-    setCurrentIndex(newIndex);
-    setCurrentEvent(eventsGroup.events[newIndex]);
+    let newIndex = currentIndex - 1;
+    if (newIndex < 0) {
+      newIndex = eventsGroup.events.length - 1;
+    }
+    selectImage(newIndex);
+    setLoaded(false);
   };
 
   return (
@@ -50,14 +66,35 @@ export function EventDialogImage({
         <DialogDescription className="sr-only">
           Full res image
         </DialogDescription>
+        {!loaded && <Skeleton className="w-full h-[50vh] rounded-md" />}
         <img
           src={fullRes}
           alt="full"
-          className="max-w-full max-h-[80vh] object-contain mx-auto my-auto"
+          className={cn(
+            "max-w-full max-h-[80vh] object-contain mx-auto my-auto",
+            !loaded ? "hidden" : ""
+          )}
+          onLoad={() => setLoaded(true)}
         />
 
         {showCarousel && (
-          <div className="absolute top-50 left-5 w-6 h-6 flex items-center justify-center rounded cursor-pointer transition-colors duration-200">
+          <div className="absolute left-1/2 top-5 -translate-x-1/2 flex items-center justify-center rounded cursor-pointer transition-colors duration-200">
+            {eventsGroup.events.map((_, i) =>
+              i === currentIndex ? (
+                <CircleDot key={i} className="text-primary w-10 h-10" />
+              ) : (
+                <Circle
+                  key={i}
+                  className="text-muted-foreground w-10 h-10 opacity-40"
+                  onClick={() => selectImage(i)}
+                />
+              )
+            )}
+          </div>
+        )}
+
+        {showCarousel && (
+          <div className="absolute top-[50%] left-5 w-6 h-6 flex items-center justify-center rounded cursor-pointer transition-colors duration-200">
             <div className="text-[10px] text-gray-300 hover:text-black font-semibold">
               <ArrowLeftCircle size={50} onClick={previousImage} />
             </div>
@@ -65,7 +102,7 @@ export function EventDialogImage({
         )}
 
         {showCarousel && (
-          <div className="absolute top-50 right-5 w-6 h-6 flex items-center justify-center rounded cursor-pointer transition-colors duration-200">
+          <div className="absolute top-[50%] right-5 w-6 h-6 flex items-center justify-center rounded cursor-pointer transition-colors duration-200">
             <div className="text-[10px] text-gray-300 hover:text-black font-semibold">
               <ArrowRightCircle size={50} onClick={nextImage} />
             </div>

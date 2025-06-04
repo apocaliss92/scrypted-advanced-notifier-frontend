@@ -9,6 +9,7 @@ enum ApiMethod {
     GetVideoclips = 'GetVideoclips',
     GetVideoclipHref = 'GetVideoclipHref',
     GetConfigs = 'GetConfigs',
+    RemoteLog = 'RemoteLog',
 }
 
 export const useApi = () => {
@@ -67,10 +68,20 @@ export const useApi = () => {
         });
     };
 
+    const remoteLog = async (content: string) => {
+        return baseCall<AppConfigs>({
+            apimethod: ApiMethod.RemoteLog,
+            method: "POST",
+            payload: {
+                content,
+            }
+        });
+    };
+
     const getEventImageUrls = (event: DetectionEvent) => {
         return {
-            thumbnail: `${import.meta.env.VITE_API_IMAGES_URL}${event.thumbnailUrl}`,
-            fullRes: `${import.meta.env.VITE_API_IMAGES_URL}${event.imageUrl}`,
+            thumbnail: `${import.meta.env.VITE_ASSETS_BASE_URL}${event.thumbnailUrl}`,
+            fullRes: `${import.meta.env.VITE_ASSETS_BASE_URL}${event.imageUrl}`,
         };
     };
 
@@ -80,8 +91,18 @@ export const useApi = () => {
         const thumbnailUrl = isLocal && !srcThumbnailUrl?.startsWith('http') ?
             `/api${srcThumbnailUrl}` : srcThumbnailUrl;
 
-        let videoUrl = `${import.meta.env.VITE_API_VIDEOCLIPS_URL}${clip.videoclipHref}`;
-        const supportsH265 = MediaSource.isTypeSupported('video/mp4; codecs="hvc1.1.6.L93.B0"');
+        let videoUrl = `${import.meta.env.VITE_ASSETS_BASE_URL}${clip.videoclipHref}`;
+        let supportsH265 = false;
+        try {
+            supportsH265 = MediaSource.isTypeSupported('video/mp4; codecs="hvc1.1.6.L93.B0"');
+
+        } catch {
+            const video = document.createElement('video');
+            const canPlay = video.canPlayType('video/mp4; codecs="hvc1.1.6.L93.B0"');
+            if (canPlay === 'probably' || canPlay === 'maybe') {
+                supportsH265 = true;
+            }
+        }
         videoUrl += `?h265=${supportsH265}`;
 
         return {
@@ -130,5 +151,6 @@ export const useApi = () => {
         getEvents,
         getVideoclips,
         getVideoclipUrls,
+        remoteLog,
     };
 }

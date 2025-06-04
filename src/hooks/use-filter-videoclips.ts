@@ -11,7 +11,9 @@ export const useFilterVideoclips = (videoclips: VideoClip[]) => {
     const classesWithoutOthers: string[] = Object.values(DetectionClass).filter(detClass => detClass !== DetectionClass.Others);
 
     return useMemo(() => {
-        return videoclips
+        const providers = new Set<string>();
+
+        const filteredClips = videoclips
             .filter(videoclip => {
                 const isOtherClip = videoclip.detectionClasses?.some(detClass => !classesWithoutOthers.includes(detClass));
                 const isClassOk = isOnlyMotion ?
@@ -24,11 +26,16 @@ export const useFilterVideoclips = (videoclips: VideoClip[]) => {
                         )
                     )
 
+                if (videoclip.description?.startsWith('@')) {
+                    providers.add(videoclip.description);
+                }
                 return (
                     isClassOk &&
                     (cameras.length ? cameras.includes(videoclip.deviceName) : true)
                 );
             })
             .sort((a, b) => b?.startTime - a?.startTime);
+
+        return filteredClips;
     }, [videoclips, cameras, detectionClasses])
 }

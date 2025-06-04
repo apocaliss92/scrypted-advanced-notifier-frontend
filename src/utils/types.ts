@@ -31,7 +31,6 @@ export interface DetectionEvent {
     source: ScryptedEventSource;
     deviceName: string;
     sensorName?: string;
-    sourceId?: string;
 }
 interface Resource {
     file?: string;
@@ -46,6 +45,7 @@ export interface VideoClip {
     deviceName: string;
     deviceId: string;
     videoclipHref: string;
+    thumbnailUrl: string;
     startTime: number;
     duration?: number;
     event?: string;
@@ -54,6 +54,7 @@ export interface VideoClip {
     thumbnailId?: string;
     videoId?: string;
     resources?: VideoResource;
+    source: ScryptedEventSource;
 }
 export enum Timezone {
     IT = 'it',
@@ -85,6 +86,9 @@ export interface UserInfo {
 }
 
 export type EventStore = {
+    sidebarOpen?: boolean
+    setSidebarOpen: (sidebarOpen?: boolean) => void
+
     userInfo?: UserInfo
     setUserInfo: (userInfo?: UserInfo) => void
 

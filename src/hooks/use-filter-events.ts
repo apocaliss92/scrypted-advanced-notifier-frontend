@@ -68,7 +68,7 @@ export const useFilterEvents = (events: DetectionEvent[]) => {
 
         // if (eventSource === ScryptedEventSource.Auto) {
         const groups: DetectionGroup[] = [];
-        const assigned = new Set<string>(); // event.id
+        const assigned = new Set<string>();
 
         for (const event of sortedEvents) {
             if (assigned.has(event.id)) continue;

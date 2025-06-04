@@ -17,6 +17,8 @@ const defaultDetectionClasses: DetectionClass[] = [
 export const useEventStore = create<EventStore>()(
     persist(
         (set) => ({
+            sidebarOpen: undefined,
+            setSidebarOpen: (sidebarOpen?: boolean) => set({ sidebarOpen }),
             userInfo: undefined,
             setUserInfo: (userInfo?: UserInfo) => set({ userInfo }),
             authError: undefined,
