@@ -1,8 +1,10 @@
 import { DetectionClass } from "@/detectionClasses";
+import { ScryptedClientLoginResult } from "@scrypted/client/src";
 
 export enum Page {
     Events = 'Events',
     Videoclips = 'Videoclips',
+    Live = 'Live',
     Login = 'Login',
 }
 
@@ -71,26 +73,13 @@ export interface AppConfigs {
     nvrUrl: string,
 }
 
-export interface UserInfo {
-    authorization: string;
-    queryToken: {
-        scryptedToken: string;
-    },
-    expiration: number,
-    username: string,
-    token: string,
-    basicAuthToken: string,
-    hostname: string,
-    externalAddresses: string[],
-    addresses: string[],
+export interface UserInfo extends ScryptedClientLoginResult {
+    basicAuthToken?: string;
 }
 
 export type EventStore = {
-    sidebarOpen?: boolean
-    setSidebarOpen: (sidebarOpen?: boolean) => void
-
-    userInfo?: UserInfo
-    setUserInfo: (userInfo?: UserInfo) => void
+    userInfo?: UserInfo,
+    setUserInfo: (userInfo?: UserInfo) => void,
 
     authError?: string
     setAuthError: (authError?: string) => void
@@ -124,4 +113,7 @@ export type EventStore = {
 
     refreshTime: number
     setRefreshTime: (refreshTime: number) => void
+
+    selectedCamera?: string
+    setSelectedCamera: (selectedCamera?: string) => void
 }

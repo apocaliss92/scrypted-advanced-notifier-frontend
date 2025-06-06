@@ -6,16 +6,14 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 import { endOfDay, startOfDay } from "date-fns";
 import { useEffect, useRef, useState } from "react";
 import EventsGroupElement from "./EventsGroupElement";
+import { useIsMobile } from "@/hooks/use-mobile";
 
-type Props = {
-  columnWidth?: number;
-  rowHeight?: number;
-};
+export default function EventsList() {
+  const isMobile = useIsMobile();
 
-export default function EventsList({
-  columnWidth = 120,
-  rowHeight = 170,
-}: Props) {
+  const columnWidth = isMobile ? 120 : 180;
+  const rowHeight = isMobile ? 190 : 240;
+
   const parentRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(0);
   const numericDate = useEventStore((state) => state.date);
@@ -64,13 +62,7 @@ export default function EventsList({
   });
 
   return (
-    <div
-      ref={parentRef}
-      style={{
-        height: `90vh`,
-        overflow: "auto",
-      }}
-    >
+    <div ref={parentRef} className="overflow-auto h-[95vh] md:h-[100vh]">
       <div
         style={{
           height: `${rowVirtualizer.getTotalSize()}px`,

@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandItem,
@@ -10,10 +9,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useSidebar } from "@/components/ui/sidebar";
 import { DetectionClass } from "@/detectionClasses";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { cn } from "@/lib/utils";
 import { DetectionClassIcon } from "@/utils/DetectionClassIcon";
 import { useEventStore } from "@/utils/store";
 import { getLabelText } from "@/utils/utils";
@@ -24,8 +21,7 @@ export function ClassSelector() {
   const setDetectionClasses = useEventStore(
     (state) => state.setDetectionClasses
   );
-  const { open } = useSidebar();
-  const isMobile = useIsMobile();
+    const isMobile = useIsMobile();
 
   const toggleOption = (option: DetectionClass) => {
     setDetectionClasses(
@@ -38,20 +34,10 @@ export function ClassSelector() {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        {!open ? (
-          <DiameterIcon />
-        ) : (
-          <Button
-            variant={"outline"}
-            className={cn("w-[100%] justify-start text-left font-normal ")}
-          >
-            <DiameterIcon />
-            {detectionClasses.length} selected
-          </Button>
-        )}
+        <DiameterIcon className="w-[100%]" />
       </PopoverTrigger>
       <PopoverContent
-        side={isMobile ? "bottom" : "right"}
+        side={isMobile ? "top" : "right"}
         className="w-auto p-0"
         align="start"
       >

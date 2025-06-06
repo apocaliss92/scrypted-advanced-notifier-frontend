@@ -61,8 +61,11 @@ export const getClassBadgeColor = (detectionClass: string) => {
 
 export const getRelevantClass = (classes: string[]) => {
     const sortedByPriorityAndScore = sortBy(classes.filter(detClass => detClass !== 'any_object'),
-        (className) => [className ? classnamePrio[(detectionClassesDefaultMap[className] ?? className)] : 100,
-            1]
+        (className) => {
+            const classParsed = className as DetectionClass;
+            return [classParsed ? classnamePrio[(detectionClassesDefaultMap[classParsed] ?? classParsed)] : 100,
+                1]
+        }
     );
 
     return sortedByPriorityAndScore[0]

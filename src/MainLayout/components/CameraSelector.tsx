@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandItem,
@@ -10,9 +9,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useSidebar } from "@/components/ui/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { cn } from "@/lib/utils";
 import { useEventStore } from "@/utils/store";
 import { Camera } from "lucide-react";
 
@@ -20,7 +17,6 @@ export function CameraSelector() {
   const configs = useEventStore((state) => state.configs);
   const cameras = useEventStore((state) => state.cameras);
   const setCameras = useEventStore((state) => state.setCameras);
-  const { open } = useSidebar();
   const isMobile = useIsMobile();
 
   const toggleOption = (option: string) => {
@@ -39,20 +35,10 @@ export function CameraSelector() {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        {!open ? (
-          <Camera />
-        ) : (
-          <Button
-            variant={"outline"}
-            className={cn("w-[100%] justify-start text-left font-normal ")}
-          >
-            <Camera />
-            {label}
-          </Button>
-        )}
+        <Camera className="w-[100%]" />
       </PopoverTrigger>
       <PopoverContent
-        side={isMobile ? "bottom" : "right"}
+        side={isMobile ? "top" : "right"}
         className="w-auto p-0"
         align="start"
       >

@@ -1,13 +1,10 @@
-import { Button } from "@/components/ui/button";
 import { Command, CommandItem, CommandList } from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useSidebar } from "@/components/ui/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { cn } from "@/lib/utils";
 import { useEventStore } from "@/utils/store";
 import { ScryptedEventSource } from "@/utils/types";
 import { Projector } from "lucide-react";
@@ -17,25 +14,14 @@ export function SourceSelector() {
   const eventSource = useEventStore((state) => state.eventSource);
   const setEventSource = useEventStore((state) => state.setEventSource);
   const isMobile = useIsMobile();
-  const { open } = useSidebar();
 
   return (
     <Popover>
       <PopoverTrigger asChild>
-        {!open ? (
-          <Projector />
-        ) : (
-          <Button
-            variant={"outline"}
-            className={cn("w-[100%] justify-start text-left font-normal ")}
-          >
-            <Projector />
-            {eventSource}
-          </Button>
-        )}
+        <Projector className="w-[100%]" />
       </PopoverTrigger>
       <PopoverContent
-        side={isMobile ? "bottom" : "right"}
+        side={isMobile ? "top" : "right"}
         className="w-auto p-0"
         align="start"
       >

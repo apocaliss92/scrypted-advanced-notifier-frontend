@@ -17,11 +17,7 @@ const defaultDetectionClasses: DetectionClass[] = [
 export const useEventStore = create<EventStore>()(
     persist(
         (set) => ({
-            sidebarOpen: undefined,
-            setSidebarOpen: (sidebarOpen?: boolean) => set({ sidebarOpen }),
-            userInfo: undefined,
             setUserInfo: (userInfo?: UserInfo) => set({ userInfo }),
-            authError: undefined,
             setAuthError: (authError?: string) => set({ authError }),
             timezone: Timezone.IT,
             setTimezone: (timezone: Timezone) => set({ timezone }),
@@ -35,7 +31,6 @@ export const useEventStore = create<EventStore>()(
             setFilter: (filter: string) => set({ filter }),
             date: new Date().getTime(),
             setDate: (date?: number) => set({ date }),
-            config: undefined,
             setConfigs: (configs: AppConfigs) => set({ configs }),
             cameras: [],
             setCameras: (cameras: string[]) => set({ cameras }),
@@ -43,6 +38,7 @@ export const useEventStore = create<EventStore>()(
             setRefreshTime: (refreshTime: number) => set({ refreshTime }),
             groupingRange: 5,
             setGroupingRange: (groupingRange?: number) => set({ groupingRange }),
+            setSelectedCamera: (selectedCamera?: string) => set({ selectedCamera }),
         }),
         {
             name: 'events-storage',
