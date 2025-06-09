@@ -1,8 +1,8 @@
 import { useScryptedClientContext } from "@/utils/scryptedClient";
-import { DeviceBase, Camera, ScryptedInterface, VideoCamera, RTCSignalingChannel } from "@scrypted/types";
+import { VideoClips, DeviceBase, Camera, ScryptedInterface, VideoCamera, RTCSignalingChannel } from "@scrypted/types";
 import { useMemo } from "react";
 
-export type CameraType = DeviceBase & Camera & VideoCamera & RTCSignalingChannel;
+export type CameraType = VideoClips & DeviceBase & Camera & VideoCamera & RTCSignalingChannel;
 
 export const useGetCameras = () => {
     const client = useScryptedClientContext();

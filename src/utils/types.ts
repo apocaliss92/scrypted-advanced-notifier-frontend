@@ -93,8 +93,8 @@ export type EventStore = {
     detectionClasses: DetectionClass[]
     setDetectionClasses: (detectionClasses: DetectionClass[]) => void
 
-    cameras: string[]
-    setCameras: (cameras: string[]) => void
+    cameras: string[],
+    setCameras: (cameras: string[]) => void,
 
     eventSource: ScryptedEventSource
     setEventSource: (eventSource: ScryptedEventSource) => void

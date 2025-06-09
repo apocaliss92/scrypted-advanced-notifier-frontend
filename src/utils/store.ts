@@ -32,7 +32,7 @@ export const useEventStore = create<EventStore>()(
             date: new Date().getTime(),
             setDate: (date?: number) => set({ date }),
             setConfigs: (configs: AppConfigs) => set({ configs }),
-            cameras: [],
+            cameras: [] as string[],
             setCameras: (cameras: string[]) => set({ cameras }),
             refreshTime: new Date().getTime(),
             setRefreshTime: (refreshTime: number) => set({ refreshTime }),

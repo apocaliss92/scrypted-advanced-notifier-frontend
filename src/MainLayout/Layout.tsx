@@ -7,6 +7,7 @@ import { Page } from "@/utils/types";
 import VideoclipsList from "@/Videoclips/VideoclipsList";
 import { useEffectOnce } from "react-use";
 import { AppSidebar } from "./AppSidebar";
+import Header from "./Header";
 
 export default function Layout() {
   const { getConfigs } = useApi();
@@ -25,20 +26,24 @@ export default function Layout() {
         }
       });
   });
-  const showFilters = [Page.Events, Page.Videoclips].includes(page);
 
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        {page === Page.Events ? (
-          <EventsList />
-        ) : page === Page.Videoclips ? (
-          <VideoclipsList />
-        ) : page === Page.Live ? (
-          <Live />
-        ) : null}
-      </SidebarInset>
-    </SidebarProvider>
+    <>
+      <Header />
+      <SidebarProvider>
+        <AppSidebar />
+        <SidebarInset className="h-[90vh]">
+          <div className="overflow-auto h-[90vh] md:h-[90vh]">
+            {page === Page.Events ? (
+              <EventsList />
+            ) : page === Page.Videoclips ? (
+              <VideoclipsList />
+            ) : page === Page.Live ? (
+              <Live />
+            ) : null}
+          </div>
+        </SidebarInset>
+      </SidebarProvider>
+    </>
   );
 }

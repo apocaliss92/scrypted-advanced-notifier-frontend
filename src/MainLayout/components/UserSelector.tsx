@@ -1,3 +1,4 @@
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   Command,
   CommandItem,
@@ -19,7 +20,7 @@ export function UserSelector() {
   const setPage = useEventStore((state) => state.setPage);
   const { logout } = useApi();
   const userInfo = useEventStore((state) => state.userInfo);
-    const isMobile = useIsMobile();
+  const isMobile = useIsMobile();
 
   const onLogout = () => {
     logout();
@@ -29,7 +30,9 @@ export function UserSelector() {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <User className="w-[100%]" />
+        <Avatar>
+          <AvatarFallback>{userInfo.username.slice(0, 2)}</AvatarFallback>
+        </Avatar>
       </PopoverTrigger>
       <PopoverContent
         side={isMobile ? "top" : "right"}

@@ -43,10 +43,15 @@ export function ToolSwitcher() {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <button className="w-6 h-6 md:w-10 md:h-10 rounded-full bg-black text-white flex items-center justify-center hover:bg-neutral-800 transition-colors">
-          {" "}
-          <activeTool.logo />
-        </button>
+        {isMobile ? (
+          <button className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center hover:bg-neutral-800 transition-colors">
+            <activeTool.logo />
+          </button>
+        ) : (
+          <button className="px-3 w-auto h-6 md:h-10 rounded-full bg-black text-white flex gap-3 items-center hover:bg-neutral-800 transition-colors">
+            <activeTool.logo /> {!isMobile && activeTool.name}
+          </button>
+        )}
       </PopoverTrigger>
       <PopoverContent
         side={isMobile ? "top" : "right"}
@@ -62,7 +67,7 @@ export function ToolSwitcher() {
               <CommandItem key={tool.name} onSelect={() => setPage(tool.page)}>
                 <button
                   className={cn(
-                    "w-8 h-8 rounded-full text-black flex items-center justify-center hover:bg-neutral-800 transition-colors",
+                    "w-8 h-8 rounded-full text-black flex items-center justify-center",
                     tool.page === page && "bg-black text-white"
                   )}
                 >

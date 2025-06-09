@@ -1,4 +1,6 @@
+import { VideoClip as ScryptedClip } from "@scrypted/types";
 import axios from "axios";
+import { useScryptedClientContext } from "./scryptedClient";
 import { useEventStore } from "./store";
 import { AppConfigs, DetectionEvent, Page, VideoClip } from "./types";
 
@@ -17,6 +19,7 @@ export const useApi = () => {
     const setUserInfo = useEventStore((state) => state.setUserInfo);
     const setAuthError = useEventStore((state) => state.setAuthError);
     const setPage = useEventStore((state) => state.setPage);
+    const client = useScryptedClientContext();
 
     const baseCall = async <T>(props: {
         apimethod: ApiMethod,
@@ -111,6 +114,15 @@ export const useApi = () => {
         };
     };
 
+    const getVideoclipImage = (clip: ScryptedClip) => {
+        const srcThumbnailUrl = clip.resources?.thumbnail?.href;
+        const isLocal = import.meta.env.DEV;
+        const thumbnailUrl = isLocal && !srcThumbnailUrl?.startsWith('http') ?
+            `/api${srcThumbnailUrl}` : srcThumbnailUrl;
+
+        return thumbnailUrl;
+    };
+
     const login = async (username: string, password: string) => {
         const response = await axios.post<any>(
             import.meta.env.VITE_API_LOGIN_URL,
@@ -152,5 +164,6 @@ export const useApi = () => {
         getVideoclips,
         getVideoclipUrls,
         remoteLog,
+        getVideoclipImage,
     };
 }

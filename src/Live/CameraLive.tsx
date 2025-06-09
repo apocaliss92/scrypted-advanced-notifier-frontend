@@ -1,30 +1,17 @@
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbList,
-} from "@/components/ui/breadcrumb";
-import { Card, CardContent } from "@/components/ui/card";
 import { CameraType } from "@/hooks/use-get-cameras";
 import { useScryptedClientContext } from "@/utils/scryptedClient";
-import { useEventStore } from "@/utils/store";
 import { BrowserSignalingSession } from "@scrypted/common/src/rtc-signaling";
 import { RTCSessionControl } from "@scrypted/sdk";
-import { ScryptedInterface } from "@scrypted/types";
-import {
-  ArrowBigLeftDash,
-  FullscreenIcon,
-  Volume2Icon,
-  VolumeOff,
-  MicOff,
-  MicIcon,
-  PlayCircle,
-  PauseCircle,
-  PauseIcon,
-  PlayIcon,
-  VolumeXIcon,
-  MaximizeIcon,
-} from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import Videoclips from "./Videoclips";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { AspectRatio } from "@radix-ui/react-aspect-ratio";
+import {
+  TransformWrapper,
+  TransformComponent,
+  useControls,
+} from "react-zoom-pan-pinch";
+import { RTCSignalingChannel, ScryptedMimeTypes } from "@scrypted/types";
 
 interface Props {
   device: CameraType;
@@ -33,25 +20,44 @@ interface Props {
 export default function CameraLive({ device }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const client = useScryptedClientContext();
-  const setSelectedCamera = useEventStore((state) => state.setSelectedCamera);
 
   const pc = useRef<Promise<RTCPeerConnection>>(null);
   const session = useRef<BrowserSignalingSession>(null);
   const control = useRef<RTCSessionControl>(null);
 
   const [playing, setPlaying] = useState(false);
-  const [muted, setMuted] = useState(true);
+  // const [muted, setMuted] = useState(true);
   const [micActive, setMicActive] = useState(true);
 
-  const toggleFullscreen = () => {
-    if (videoRef.current) {
-      if (!document.fullscreenElement) {
-        videoRef.current.requestFullscreen().catch(console.error);
-      } else {
-        document.exitFullscreen().catch(console.error);
-      }
-    }
-  };
+  const isMobile = useIsMobile();
+
+  // const toggleFullscreen = () => {
+  //   const video = videoRef.current;
+  //   if (!video) return;
+
+  //   if (document.fullscreenElement) {
+  //     document.exitFullscreen().catch(console.error);
+  //   } else if (video.requestFullscreen) {
+  //     video.requestFullscreen().catch(console.error);
+  //   } else if ((video as any).webkitEnterFullscreen) {
+  //     (video as any).webkitEnterFullscreen();
+  //   }
+  // };
+
+  // const togglePiP = async () => {
+  //   const video = videoRef.current;
+  //   if (!video) return;
+
+  //   try {
+  //     if (document.pictureInPictureElement) {
+  //       await document.exitPictureInPicture();
+  //     } else if (video.requestPictureInPicture) {
+  //       await video.requestPictureInPicture();
+  //     }
+  //   } catch (err) {
+  //     console.error("PiP error:", err);
+  //   }
+  // };
 
   const toggleMicrophone = async () => {
     if (!control || !session) return;
@@ -80,11 +86,11 @@ export default function CameraLive({ device }: Props) {
     }
   };
 
-  const toggleMuted = async () => {
-    const active = !muted;
+  // const toggleMuted = async () => {
+  //   const active = !muted;
 
-    setMuted(active);
-  };
+  //   setMuted(active);
+  // };
 
   const cleanupPeerConnection = useCallback(() => {
     control.current?.endSession();
@@ -116,6 +122,18 @@ export default function CameraLive({ device }: Props) {
     const newControl: RTCSessionControl =
       (await device.startRTCSignalingSession(newSession))!;
 
+    // const mo = await device.getVideoStream({
+    //   destination: 'local',
+    //   video: {
+    //     codec: "h264",
+    //   },
+    // });
+    // const channel = await client.mediaManager.convertMediaObject<RTCSignalingChannel>(
+    //   mo,
+    //   ScryptedMimeTypes.RTCSignalingChannel
+    // );
+    // const newControl = (await channel.startRTCSignalingSession(newSession))!;
+
     newSession.pcDeferred.promise.then((pc) => {
       pc.addEventListener("iceconnectionstatechange", () => {
         console.log("iceConnectionStateChange", pc.iceConnectionState);
@@ -145,46 +163,64 @@ export default function CameraLive({ device }: Props) {
 
   return (
     <div className="grid gap-4 p-0">
-      <div className="p-2">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem className="hidden md:block cursor:pointer"></BreadcrumbItem>
-            <BreadcrumbItem>
-              <ArrowBigLeftDash
-                width={30}
-                height={30}
-                onClick={() => setSelectedCamera(undefined)}
+      <div className="grid grid-cols-1 lg:grid-cols-4 xl:grid-cols-6 gap-4 h-[90vh]">
+        <div className="lg:col-span-3 xl:col-span-4">
+          {/* <AspectRatio ratio={16 / 9} className="bg-muted rounded-lg"> */}
+          <TransformWrapper>
+            <TransformComponent>
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                controls
+                // muted={muted}
+                className="w-full md:w-auto max-h-auto md:max-h-[calc(90vh-30px)]"
               />
+            </TransformComponent>
+          </TransformWrapper>
+          <div
+            className="flex items-center justify-between 
+            bg-black/70 text-white px-4 py-2 
+            h-[30px]
+            "
+          >
+            {device.name}
+          </div>
+          {/* <div
+              className="flex items-center justify-between 
+            bg-black/70 text-white px-4 py-2 
+            max-w-[1500px] max-h-[70vh] w-full
+            "
+            >
               {device.name}
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-      </div>
+            </div> */}
+          {/* </AspectRatio> */}
 
-      <div className="grid grid-cols-1 xl:grid-cols-4 2xl:grid-cols-6 gap-4">
-        <div className="xl:col-span-3 2xl:col-span-4">
-          <video
-            ref={videoRef}
-            autoPlay
-            playsInline
-            muted={muted}
-            className="max-w-[1500px] max-h-[80vh] w-full"
-          />
-
-          <div className="flex items-center justify-between bg-black/70 text-white px-4 py-2 max-w-[1500px] max-h-[80vh] w-full">
+          {/* <div className="flex items-center justify-between bg-black/70 text-white px-4 py-2 max-w-[1500px] max-h-[80vh] w-full">
             <button onClick={togglePlayPause} className="hover:text-gray-300">
               {playing ? <PauseIcon size={24} /> : <PlayIcon size={24} />}
             </button>
             <button onClick={toggleMuted} className="hover:text-gray-300">
               {muted ? <VolumeXIcon size={24} /> : <Volume2Icon size={24} />}
             </button>
+            <button onClick={togglePiP} className="hover:text-gray-300">
+              <PictureInPicture size={24} />
+            </button>
             <button onClick={toggleFullscreen} className="hover:text-gray-300">
               <MaximizeIcon size={24} />
             </button>
-          </div>
+          </div> */}
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">Eventi 1</div>
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">Eventi 2</div>
+        <div className="flex-1 overflow-auto">
+          {/* <div className="flex flex-col h-[45vh] lg:h-[90vh] overflow-auto"> */}
+          <Videoclips device={device} />
+        </div>
+        {/* <div className="grid grid-cols-1 gap-4">
+          <Videoclips device={device} />
+        </div> */}
+        {!isMobile && (
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">Eventi 2</div>
+        )}
       </div>
     </div>
   );

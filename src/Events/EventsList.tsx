@@ -62,7 +62,7 @@ export default function EventsList() {
   });
 
   return (
-    <div ref={parentRef} className="overflow-auto h-[95vh] md:h-[100vh]">
+    <div ref={parentRef}>
       <div
         style={{
           height: `${rowVirtualizer.getTotalSize()}px`,
