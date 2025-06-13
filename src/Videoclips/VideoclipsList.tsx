@@ -7,6 +7,7 @@ import { endOfDay, startOfDay } from "date-fns";
 import { useEffect, useRef, useState } from "react";
 import VideoclipElement from "./VideoclipElement";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useScryptedClientContext } from "@/utils/scryptedClient";
 
 export default function VideoclipsList() {
   const isMobile = useIsMobile();
@@ -21,12 +22,13 @@ export default function VideoclipsList() {
   const setPage = useEventStore((state) => state.setPage);
   const [allVideoclips, setVideoclips] = useState<VideoClip[]>([]);
   const [loading, setLoading] = useState(false);
+  const client = useScryptedClientContext();
 
   const { getVideoclips } = useApi();
 
   useEffect(() => {
     const date = numericDate ? new Date(numericDate) : undefined;
-    if (date) {
+    if (date && client) {
       setLoading(true);
       getVideoclips(startOfDay(date).getTime(), endOfDay(date).getTime())
         .then((videoclips) => {
@@ -39,7 +41,7 @@ export default function VideoclipsList() {
         })
         .finally(() => setLoading(false));
     }
-  }, [numericDate, refreshTime]);
+  }, [numericDate, refreshTime, client]);
 
   const videoclips = useFilterVideoclips(allVideoclips);
 
@@ -62,7 +64,13 @@ export default function VideoclipsList() {
   });
 
   return (
-    <div ref={parentRef}>
+    <div
+      ref={parentRef}
+      style={{
+        height: `90vh`,
+        overflow: "auto",
+      }}
+    >
       <div
         style={{
           height: `${rowVirtualizer.getTotalSize()}px`,

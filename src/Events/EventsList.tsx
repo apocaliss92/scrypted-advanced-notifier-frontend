@@ -7,6 +7,7 @@ import { endOfDay, startOfDay } from "date-fns";
 import { useEffect, useRef, useState } from "react";
 import EventsGroupElement from "./EventsGroupElement";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useScryptedClientContext } from "@/utils/scryptedClient";
 
 export default function EventsList() {
   const isMobile = useIsMobile();
@@ -21,12 +22,13 @@ export default function EventsList() {
   const setPage = useEventStore((state) => state.setPage);
   const [allEvents, setEvents] = useState<DetectionEvent[]>([]);
   const [loading, setLoading] = useState(false);
+  const client = useScryptedClientContext();
 
   const { getEvents } = useApi();
 
   useEffect(() => {
     const date = numericDate ? new Date(numericDate) : undefined;
-    if (date) {
+    if (date && client) {
       setLoading(true);
       getEvents(startOfDay(date).getTime(), endOfDay(date).getTime())
         .then((events) => {
@@ -39,7 +41,7 @@ export default function EventsList() {
         })
         .finally(() => setLoading(false));
     }
-  }, [numericDate, refreshTime]);
+  }, [numericDate, refreshTime, client]);
 
   const events = useFilterEvents(allEvents);
 
@@ -62,7 +64,13 @@ export default function EventsList() {
   });
 
   return (
-    <div ref={parentRef}>
+    <div
+      ref={parentRef}
+      style={{
+        height: `90vh`,
+        overflow: "auto",
+      }}
+    >
       <div
         style={{
           height: `${rowVirtualizer.getTotalSize()}px`,

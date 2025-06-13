@@ -2,30 +2,27 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import EventsList from "@/Events/EventsList";
 import Live from "@/Live/Live";
 import { useApi } from "@/utils/api";
+import { useScryptedClientContext } from "@/utils/scryptedClient";
 import { useEventStore } from "@/utils/store";
 import { Page } from "@/utils/types";
 import VideoclipsList from "@/Videoclips/VideoclipsList";
-import { useEffectOnce } from "react-use";
+import { useEffect } from "react";
 import { AppSidebar } from "./AppSidebar";
 import Header from "./Header";
 
 export default function Layout() {
-  const { getConfigs } = useApi();
   const setConfigs = useEventStore((state) => state.setConfigs);
-  const setPage = useEventStore((state) => state.setPage);
   const page = useEventStore((state) => state.page);
+  const client = useScryptedClientContext();
+  const { getConfigs } = useApi();
 
-  useEffectOnce(() => {
-    getConfigs()
-      .then((newConfigs) => {
-        setConfigs(newConfigs);
-      })
-      .catch((e) => {
-        if (e.response.status === 401) {
-          setPage(Page.Login);
-        }
+  useEffect(() => {
+    if (client) {
+      getConfigs().then((configs) => {
+        setConfigs(configs);
       });
-  });
+    }
+  }, [client]);
 
   return (
     <>

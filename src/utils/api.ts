@@ -1,84 +1,57 @@
-import { VideoClip as ScryptedClip } from "@scrypted/types";
+import { VideoClip as ScryptedClip, ScryptedInterface, VideoClips } from "@scrypted/types";
 import axios from "axios";
 import { useScryptedClientContext } from "./scryptedClient";
 import { useEventStore } from "./store";
-import { AppConfigs, DetectionEvent, Page, VideoClip } from "./types";
-
-const baseUrl = import.meta.env.VITE_API_BASE_URL;
-
-enum ApiMethod {
-    GetEvents = 'GetEvents',
-    GetVideoclips = 'GetVideoclips',
-    GetVideoclipHref = 'GetVideoclipHref',
-    GetConfigs = 'GetConfigs',
-    RemoteLog = 'RemoteLog',
-}
+import { AppConfigs, CameraType, DetectionEvent, Page, ScryptedEventSource, VideoClip } from "./types";
+import { EventRecorder } from "@scrypted/sdk";
 
 export const useApi = () => {
-    const userInfo = useEventStore((state) => state.userInfo);
     const setUserInfo = useEventStore((state) => state.setUserInfo);
     const setAuthError = useEventStore((state) => state.setAuthError);
     const setPage = useEventStore((state) => state.setPage);
     const client = useScryptedClientContext();
 
-    const baseCall = async <T>(props: {
-        apimethod: ApiMethod,
-        method?: 'GET' | 'POST',
-        payload?: any,
-    }) => {
-        const { apimethod, method = 'GET', payload } = props;
-        const res = await axios.request({
-            method,
-            url: `${baseUrl}/eventsApp`,
-            data: {
-                apimethod,
-                payload,
-            },
-            headers: {
-                Authorization: userInfo?.basicAuthToken
-            }
-        });
+    const getEvents = async (startTime: number, endTime: number) => {
+        const dataFetcher = client.systemManager.getDeviceByName<EventRecorder>('Advanced notifier data fetcher');
+        const events = await dataFetcher.getRecordedEvents({ startTime, endTime });
 
-        return res.data as T;
+        return events.map(event => event.data as DetectionEvent);
     };
 
-    const getEvents = async (fromDate: number, tillDate: number) => {
-        return baseCall<DetectionEvent[]>({
-            apimethod: ApiMethod.GetEvents,
-            method: "POST",
-            payload: {
-                fromDate,
-                tillDate,
-            }
-        });
+    const getVideoclips = async (startTime: number, endTime: number) => {
+        const dataFetcher = client.systemManager.getDeviceByName<VideoClips>('Advanced notifier data fetcher');
+        const videoclips = await dataFetcher.getVideoClips({ startTime, endTime });
+
+        return videoclips as VideoClip[];
     };
 
-    const getVideoclips = async (fromDate: number, tillDate: number) => {
-        return baseCall<VideoClip[]>({
-            apimethod: ApiMethod.GetVideoclips,
-            method: "POST",
-            payload: {
-                fromDate,
-                tillDate,
-            }
-        });
+    const getConfigs = async (): Promise<AppConfigs> => {
+        const cameras: CameraType[] = client ?
+            Object.keys(client.systemManager.getSystemState())
+                .map(deviceId => client.systemManager.getDeviceById<CameraType>(deviceId))
+                .filter(device => [ScryptedInterface.VideoCamera, ScryptedInterface.Camera]
+                    .some(int => device.interfaces.includes(int))) :
+            [];
+        const frigateDevice = client.systemManager.getDeviceByName('Frigate bridge');
+        const enabledDetectionSources: ScryptedEventSource[] = [
+            ScryptedEventSource.RawDetection,
+            ScryptedEventSource.NVR
+        ];
+        if (frigateDevice) {
+            enabledDetectionSources.push(ScryptedEventSource.Frigate);
+        }
+
+        return {
+            cameras,
+            enabledDetectionSources,
+        };
     };
 
-    const getConfigs = async () => {
-        return baseCall<AppConfigs>({
-            apimethod: ApiMethod.GetConfigs,
-            method: "POST",
-        });
-    };
+    const remoteLog = async (...content: string[]) => {
+        const dataFetcher = client.systemManager.getDeviceByName<EventRecorder>('Advanced notifier data fetcher');
+        const logger = client.deviceManager.getDeviceConsole(dataFetcher.nativeId);
 
-    const remoteLog = async (content: string) => {
-        return baseCall<AppConfigs>({
-            apimethod: ApiMethod.RemoteLog,
-            method: "POST",
-            payload: {
-                content,
-            }
-        });
+        logger.log(...content);
     };
 
     const getEventImageUrls = (event: DetectionEvent) => {

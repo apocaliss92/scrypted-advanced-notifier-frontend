@@ -1,9 +1,8 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { useScryptedClientContext } from "@/utils/scryptedClient";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Camera } from "@scrypted/sdk";
-import { CameraType } from "@/hooks/use-get-cameras";
 import { useEventStore } from "@/utils/store";
+import { CameraType } from "@/utils/types";
 
 interface Props {
   device: CameraType;

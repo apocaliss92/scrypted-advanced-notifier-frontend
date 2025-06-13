@@ -19,9 +19,10 @@ const ScryptedClientContext = createContext<ScryptedClientStatic | undefined>(
 export const ScryptedClient = ({ children }: { children: ReactNode }) => {
   const userInfo = useEventStore((state) => state.userInfo);
   const [client, setClient] = useState<ScryptedClientStatic>();
+  const token = userInfo?.basicAuthToken;
 
   useEffect(() => {
-    if (userInfo?.basicAuthToken) {
+    if (token) {
       const { basicAuthToken } = userInfo;
       const [username, password] = atob(
         basicAuthToken.split("Basic ")[1]
@@ -39,7 +40,7 @@ export const ScryptedClient = ({ children }: { children: ReactNode }) => {
         setClient(client);
       });
     }
-  }, [userInfo]);
+  }, [token]);
 
   return (
     <ScryptedClientContext.Provider value={client}>

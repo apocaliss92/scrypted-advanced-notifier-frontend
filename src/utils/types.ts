@@ -1,5 +1,8 @@
 import { DetectionClass } from "@/detectionClasses";
 import { ScryptedClientLoginResult } from "@scrypted/client/src";
+import { Camera, DeviceBase, RTCSignalingChannel, VideoClip as ScryptedVideoClip, VideoCamera, VideoClips } from "@scrypted/types";
+
+export type CameraType = VideoClips & DeviceBase & Camera & VideoCamera & RTCSignalingChannel;
 
 export enum Page {
     Events = 'Events',
@@ -34,29 +37,10 @@ export interface DetectionEvent {
     deviceName: string;
     sensorName?: string;
 }
-interface Resource {
-    file?: string;
-    href?: string;
-}
-interface VideoResource {
-    thumbnail?: Resource;
-    video?: Resource;
-}
-export interface VideoClip {
-    id: string;
-    deviceName: string;
-    deviceId: string;
-    videoclipHref: string;
-    thumbnailUrl: string;
-    startTime: number;
-    duration?: number;
-    event?: string;
-    description?: string;
-    detectionClasses?: string[];
-    thumbnailId?: string;
-    videoId?: string;
-    resources?: VideoResource;
-    source: ScryptedEventSource;
+export type VideoClip = ScryptedVideoClip & {
+    deviceName: string,
+    deviceId: string,
+    videoclipHref: string,
 }
 export enum Timezone {
     IT = 'it',
@@ -64,13 +48,8 @@ export enum Timezone {
 }
 
 export interface AppConfigs {
-    cameras: {
-        id: string,
-        name: string,
-    }[],
-    enabledDetectionSources: ScryptedEventSource[],
-    eventDays: string[],
-    nvrUrl: string,
+    cameras: CameraType[],
+    enabledDetectionSources: ScryptedEventSource[]
 }
 
 export interface UserInfo extends ScryptedClientLoginResult {

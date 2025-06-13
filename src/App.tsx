@@ -16,7 +16,7 @@ function App() {
   const { remoteLog } = useApi();
 
   useEffect(() => {
-    window.onerror = (...args) => remoteLog(args.join(" "));
+    window.onerror = (...args) => remoteLog(...args.join(",").split(","));
   }, []);
 
   return (

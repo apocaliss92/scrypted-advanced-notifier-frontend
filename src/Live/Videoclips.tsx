@@ -1,6 +1,6 @@
-import { CameraType } from "@/hooks/use-get-cameras";
 import { useApi } from "@/utils/api";
 import { useScryptedClientContext } from "@/utils/scryptedClient";
+import { CameraType } from "@/utils/types";
 import { VideoClip } from "@scrypted/types";
 import { format, startOfDay } from "date-fns";
 import { useCallback, useEffect, useRef, useState } from "react";

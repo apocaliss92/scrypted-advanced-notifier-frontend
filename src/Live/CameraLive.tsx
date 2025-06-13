@@ -1,17 +1,11 @@
-import { CameraType } from "@/hooks/use-get-cameras";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useScryptedClientContext } from "@/utils/scryptedClient";
+import { CameraType } from "@/utils/types";
 import { BrowserSignalingSession } from "@scrypted/common/src/rtc-signaling";
 import { RTCSessionControl } from "@scrypted/sdk";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 import Videoclips from "./Videoclips";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { AspectRatio } from "@radix-ui/react-aspect-ratio";
-import {
-  TransformWrapper,
-  TransformComponent,
-  useControls,
-} from "react-zoom-pan-pinch";
-import { RTCSignalingChannel, ScryptedMimeTypes } from "@scrypted/types";
 
 interface Props {
   device: CameraType;
