@@ -35,7 +35,8 @@ export default function EventsList() {
           setEvents(events);
         })
         .catch((e) => {
-          if (e.response.status === 401) {
+          console.log(e);
+          if (e.response?.status === 401) {
             setPage(Page.Login);
           }
         })

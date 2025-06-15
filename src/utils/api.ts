@@ -1,4 +1,4 @@
-import { VideoClip as ScryptedClip, ScryptedInterface, VideoClips } from "@scrypted/types";
+import { VideoClip as ScryptedClip, ScryptedInterface, Settings, VideoClips } from "@scrypted/types";
 import axios from "axios";
 import { useScryptedClientContext } from "./scryptedClient";
 import { useEventStore } from "./store";
@@ -41,10 +41,30 @@ export const useApi = () => {
             enabledDetectionSources.push(ScryptedEventSource.Frigate);
         }
 
+        let knownPeople: string[] = [];
+        const nvrObjectDetection = client?.systemManager.getDeviceByName<Settings>('Scrypted NVR Object Detection');
+        if (nvrObjectDetection) {
+            const nvrSettings = await nvrObjectDetection.getSettings();
+            const knownPeopleSetting = nvrSettings.find(setting => setting.key === "knownPeople");
+            knownPeople = knownPeopleSetting.value as string[];
+        }
+
         return {
             cameras,
             enabledDetectionSources,
+            knownPeople,
         };
+    };
+
+    const updateLabel = async (embedding: any, person: string) => {
+        const nvrObjectDetection = client?.systemManager.getDeviceByName<Settings>('Scrypted NVR Object Detection');
+        if (nvrObjectDetection) {
+            const payload: any = {
+                embedding,
+                person,
+            };
+            nvrObjectDetection.putSetting('addFace', payload);
+        }
     };
 
     const remoteLog = async (...content: string[]) => {

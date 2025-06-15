@@ -38,7 +38,7 @@ export default function EventsGroupElement({ eventsGroup, loading }: Props) {
   return (
     <>
       <Card
-        className="rounded-none cursor-pointer overflow-auto relative group w-full p-0"
+        className="rounded-none cursor-pointer overflow-none relative group w-full p-0"
         style={{ aspectRatio: "1 / 1", width: "100%" }}
       >
         <div className="w-full h-full flex items-center justify-center">

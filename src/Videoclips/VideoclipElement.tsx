@@ -17,7 +17,7 @@ export default function VideoclipElement({ videoclip, loading }: Props) {
   if (loading) {
     return (
       <Card
-        className="rounded-none cursor-pointer overflow-auto relative group w-full p-0"
+        className="rounded-none cursor-pointer overflow-none relative group w-full p-0"
         style={{ aspectRatio: "1 / 1", width: "100%" }}
       >
         <Skeleton className="w-full h-full" />

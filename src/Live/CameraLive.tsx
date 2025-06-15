@@ -157,8 +157,10 @@ export default function CameraLive({ device }: Props) {
 
   return (
     <div className="grid gap-4 p-0">
-      <div className="grid grid-cols-1 lg:grid-cols-4 xl:grid-cols-6 gap-4 h-[90vh]">
-        <div className="lg:col-span-3 xl:col-span-4">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 h-[90vh]">
+      {/* <div className="grid grid-cols-1 lg:grid-cols-4 xl:grid-cols-6 gap-4 h-[90vh]"> */}
+        <div className="lg:col-span-3">
+        {/* <div className="lg:col-span-3 xl:col-span-4"> */}
           {/* <AspectRatio ratio={16 / 9} className="bg-muted rounded-lg"> */}
           <TransformWrapper>
             <TransformComponent>
@@ -212,9 +214,9 @@ export default function CameraLive({ device }: Props) {
         {/* <div className="grid grid-cols-1 gap-4">
           <Videoclips device={device} />
         </div> */}
-        {!isMobile && (
+        {/* {!isMobile && (
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">Eventi 2</div>
-        )}
+        )} */}
       </div>
     </div>
   );

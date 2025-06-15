@@ -66,14 +66,13 @@ export const useFilterEvents = (events: DetectionEvent[]) => {
             })
             .sort((a, b) => b?.timestamp - a?.timestamp);
 
-        // if (eventSource === ScryptedEventSource.Auto) {
         const groups: DetectionGroup[] = [];
         const assigned = new Set<string>();
 
         for (const event of sortedEvents) {
             if (assigned.has(event.id)) continue;
 
-            const groupEvents = [event];
+            let groupEvents = [event];
             assigned.add(event.id);
             const groupClasses = new Set(event.classes);
 
@@ -113,6 +112,18 @@ export const useFilterEvents = (events: DetectionEvent[]) => {
 
             const classes = uniq(groupEvents.flatMap(event => event.classes));
 
+            if (eventSource === ScryptedEventSource.Auto) {
+                const nvrEventIds = new Set(
+                    groupEvents
+                        .filter(event => event.source === 'NVR')
+                        .map(event => event.eventId)
+                );
+
+                groupEvents = groupEvents.filter(event => {
+                    return !(event.source === ScryptedEventSource.RawDetection && nvrEventIds.has(event.eventId));
+                });
+            }
+
             groups.push({
                 events: groupEvents,
                 representative,
@@ -121,15 +132,6 @@ export const useFilterEvents = (events: DetectionEvent[]) => {
             });
         }
 
-
         return groups;
-        // } else {
-        //     return sortedEvents.map(event => ({
-        //         events: [event],
-        //         representative: event,
-        //         classes: event.classes,
-        //         labels: [event.label]
-        //     })) as DetectionGroup[];
-        // }
     }, [events, cameras, eventSource, filter, groupingRange, detectionClasses])
 }

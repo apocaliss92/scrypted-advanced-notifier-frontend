@@ -3,6 +3,7 @@ import { useScryptedClientContext } from "@/utils/scryptedClient";
 import { CameraType } from "@/utils/types";
 import { VideoClip } from "@scrypted/types";
 import { format, startOfDay } from "date-fns";
+import { orderBy } from "lodash";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 interface Props {
@@ -24,7 +25,7 @@ export default function Videoclips({ device }: Props) {
       endTime,
     });
 
-    setClips(videoclips);
+    setClips(orderBy(videoclips, (clip) => clip.startTime, ["desc"]));
   }, []);
 
   useEffect(() => {
@@ -54,10 +55,7 @@ export default function Videoclips({ device }: Props) {
             <div className="flex-1" />
 
             <div className="w-auto h-[100px] lg-h-[2000px]">
-              <img
-                src={thumbnailUrl}
-                className="w-auto h-full rounded-md"
-              />
+              <img src={thumbnailUrl} className="w-auto h-full rounded-md" />
             </div>
           </div>
         );

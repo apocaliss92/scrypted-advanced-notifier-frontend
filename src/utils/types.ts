@@ -30,11 +30,13 @@ export interface DetectionEvent {
     timestamp: number;
     classes: string[];
     label?: string;
+    embedding?: string;
     thumbnailUrl: string;
     imageUrl: string;
     videoUrl?: string;
     source: ScryptedEventSource;
     deviceName: string;
+    eventId: string;
     sensorName?: string;
 }
 export type VideoClip = ScryptedVideoClip & {
@@ -49,6 +51,7 @@ export enum Timezone {
 
 export interface AppConfigs {
     cameras: CameraType[],
+    knownPeople: string[],
     enabledDetectionSources: ScryptedEventSource[]
 }
 
